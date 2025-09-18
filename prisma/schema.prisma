@@ -1,0 +1,95 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id          String   @id @default(uuid())
+  address     String   @db.VarChar(255)
+  name        String   @db.VarChar(255)
+  email       String   @unique @db.VarChar(255)
+  phone       String   @db.VarChar(255)
+  gender      Gender   @default(Male)
+  image       String   @db.VarChar(255)
+  password    String   @db.VarChar(255)
+  role        Role     @default(User)
+  dateOfBirth DateTime
+  age         Int
+
+  donorDetails DonorDetail[]
+  vitals       Vital[]
+  tokens       Token[]
+  BloodStat    BloodStat?
+
+  @@map("users")
+}
+
+model BloodStat {
+  id         String @id @default(uuid())
+  genoType   String @db.VarChar(255)
+  bloodGroup String @db.VarChar(255)
+
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id])
+}
+
+model DonorDetail {
+  id                String    @id @default(uuid())
+  volumePerDonation Int
+  numberOfDonations Int
+  expired           Boolean   @default(false)
+  revoked           Boolean   @default(false)
+  Type              DonorType @default(First)
+
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
+}
+
+model Vital {
+  id          String  @id @default(uuid())
+  pressureUp  Decimal
+  pressureLow Decimal
+  temperature Decimal
+  height      Decimal
+  weight      Decimal
+  bmi         Decimal
+
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
+}
+
+model Token {
+  id           String    @id @default(uuid())
+  accessToken  String    @unique @db.VarChar(750)
+  refreshToken String    @unique @db.VarChar(750)
+  tokenType    TokenType @default(Bearer)
+
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
+}
+
+enum Gender {
+  Female
+  Male
+}
+
+enum Role {
+  Admin
+  Staff
+  User
+}
+
+enum DonorType {
+  First
+  OneOf
+  Premium
+}
+
+enum TokenType {
+  Bearer
+}
