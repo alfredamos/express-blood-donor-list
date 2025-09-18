@@ -2,14 +2,21 @@ import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 import cookieParser from "cookie-parser";
+
+import authRoutes from "./routes/auth.route"
+
 dotenv.config();
 
+//----> Initialize express app.
 const app = express();
 
+//----> Get the port number from environment from file.
 const Port = process.env.PORT || 3000;
 
+//----> Parse cookie.
 app.use(cookieParser());
 
+//----> Activate cors.
 app.use(
   cors({
     credentials: true,
@@ -17,8 +24,14 @@ app.use(
   })
 );
 
+//----> Not url encoded
 app.use(express.urlencoded({ extended: false }));
 
+//----> Allow json
 app.use(express.json());
 
+//----> Routes.
+app.use("/api/auth", authRoutes);
+
+//----> Listening port.
 app.listen(Port, () => console.log(`App is listening on ${Port}...`));
