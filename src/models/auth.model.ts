@@ -9,9 +9,10 @@ import {LoginDto} from "../dto/login.dto";
 import {SignupDto} from "../dto/signup.dto";
 import {tokenModel} from "./token.model";
 import {validateUserToken} from "../utils/validateUserToken";
+import {toUserDto} from "../utils/toDto";
 
 
-export class AuthModel {
+class AuthModel {
   //----> Change-password.
   async changePassword(request: ChangePasswordDto): Promise<ResponseMessage> {
     //---> Destructure request.
@@ -94,6 +95,11 @@ export class AuthModel {
       //----> send back response.
       return user
 
+  }
+
+  //----> Fetch the current-user.
+  async getCurrentUser(userId: string) {
+      return toUserDto(await prisma.user.findUnique({where: {id: userId}}));
   }
 
   //----> Signup new user.

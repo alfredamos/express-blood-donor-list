@@ -8,7 +8,7 @@ export class TokenModel {
     }
 
     async findByAccessToken(token: string){
-        return await prisma.token.findUnique({where: {accessToken: token}})
+        return prisma.token.findUnique({where: {accessToken: token}});
     }
 
     //----> Find all valid tokens
@@ -22,8 +22,6 @@ export class TokenModel {
         //----> Fetch all valid tokens.
         const validUserTokens = await tokenModel.findAllValidTokensByUser(userId);
 
-        console.log("In revoked-all-user-tokens, validUserTokens : ", validUserTokens);
-
         //----> Invalidate all valid tokens
         if (!validUserTokens?.length) return;
         const filteredTokens = validUserTokens.map(async (token) => {
@@ -33,7 +31,7 @@ export class TokenModel {
                 expired: true,
             }
 
-            return await prisma.token.update({where: {id: updatedToken.id}, data: updatedToken});
+            return prisma.token.update({where: {id: updatedToken.id}, data: updatedToken});
 
         });
 

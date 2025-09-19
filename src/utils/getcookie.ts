@@ -6,7 +6,7 @@ export function getCookie(req: Request, tokenName: string) {
     try{
         return JSON.parse(req.cookies[tokenName]);
     }catch(err){
-        throw catchError(StatusCodes.UNAUTHORIZED, "You do not have a valid refresh token!");
+        throw catchError(StatusCodes.UNAUTHORIZED, "You do not have a valid token!");
     }
 
 }

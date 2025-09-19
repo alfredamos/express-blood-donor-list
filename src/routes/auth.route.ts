@@ -16,6 +16,11 @@ router.route("/change-password")
 router.route("/edit-profile")
     .patch(editProvideValidationMiddleware, cookieAuthenticationMiddleware, authController.editUserProfile);
 
+//----> Get current user.
+router.route("/me")
+    .get(cookieAuthenticationMiddleware, authController.getCurrentUser)
+
+
 //----> Login route.
 router.route("/login")
     .post(loginValidationMiddleware, authController.loginUser);
@@ -26,6 +31,10 @@ router.route("/signup")
 
 router.route("/refresh")
     .post(authController.refreshUserToken);
+
+router.route("/logout")
+    .post(authController.logoutUser);
+
 
 
 export default router;

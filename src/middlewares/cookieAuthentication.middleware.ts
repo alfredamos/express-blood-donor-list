@@ -6,7 +6,10 @@ import {authenticationHelperFunction} from "./authenticationHelperfunction";
 
 export function cookieAuthenticationMiddleware(req: Request, _res: Response, next: NextFunction) {
     //----> Get userRole, userName and userId.
-    const {isName: userName, userId, userRole} = authenticationHelperFunction(req);
+    const {isName: userName, userId, userRole, email} = authenticationHelperFunction(req);
+
+    //----> Set the id, name, email and role of user on request object.
+    req.user = {id: userId, name : userName, email, role: userRole };
 
 
     //----> Check for authorized-user.

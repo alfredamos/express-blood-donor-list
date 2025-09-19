@@ -11,7 +11,6 @@ import {CookieParams} from "../utils/cookieParams";
 import {tokenModel} from "../models/token.model";
 import {TokenType} from "../models/tokenType.model";
 import {getCookie} from "../utils/getcookie";
-import {validateUserToken} from "../utils/validateUserToken";
 import prisma from "../db/prisma.db";
 import {ResponseMessage} from "../utils/reponseMessage";
 
@@ -46,8 +45,6 @@ class AuthController {
         //----> Login the user.
         const user = await authModel.loginUser(loginDto);
 
-        console.log("login-user-controller, user : ", user);
-
         //----> Revoked all previous tokens.
         await tokenModel.revokedAllUserTokens(user?.id)
 
@@ -74,19 +71,29 @@ class AuthController {
             await prisma.token.update({where: {accessToken: storedAccessToken.accessToken}, data: {...storedAccessToken}});
         }
 
-        //----> Invalidate both the access-token and refresh-token.
-        makeCookie(res, CookieParams.accessToken, JSON.stringify(accessToken), CookieParams.accessTokenPath,0);
-        //makeCookie(res, CookieParams.refreshToken, JSON.stringify(refreshToken), CookieParams.refreshTokenPath,0)
+        //----> Delete access-token and refresh-token.
+        deleteCookie(res, CookieParams.accessToken, CookieParams.accessTokenPath)
+        deleteCookie(res, CookieParams.refreshToken, CookieParams.refreshTokenPath)
 
         //----> send back the response.
         res.status(StatusCodes.OK).json( new ResponseMessage("Logout is successful!", "successful", 200) );
     }
 
+    async getCurrentUser(req: Request, res: Response) {
+        //----> Get the user id from request object.
+        const {id} = req.user;
+
+        //----> Fetch the user from database.
+        const currentUser = await authModel.getCurrentUser(id);
+
+        //----> Send back the response.
+        res.status(StatusCodes.OK).json(currentUser);
+
+    }
+
     async signUpUser(req: Request, res: Response) {
         //----> Get the sign-up payload from request.
         const signUp = req.body as SignupDto;
-
-        console.log("In signup of controller : signup" , signUp);
 
         //----> Register the user and store his/her data in the database.
         const response = await authModel.signupUser(signUp);
@@ -111,24 +118,18 @@ class AuthController {
 
 }
 
+const deleteCookie = (res: Response, cookieName: string, cookiePath: string) => {
+    res.clearCookie(cookieName, { path: cookiePath, secure: false, httpOnly: true });
+}
+
 const generateTokensAndCookies = async(userId: string, userName: string, userEmail: string, userRole: Role, res: Response) =>{
     //----> Get access-token and refresh-token.
     const accessToken = await generateAccessToken(userId, userName, userEmail, userRole);
     const refreshToken = await generateRefreshTokenToken(userId, userName, userEmail, userRole);
 
     //----> store both the access-token and refresh-token in the cookie.
-    res.cookie(CookieParams.accessToken, JSON.stringify(accessToken), {
-        httpOnly: true,
-        secure: false,
-        path: CookieParams.accessTokenPath,
-        maxAge: CookieParams.accessTokenMaxAge
-    });
-    res.cookie(CookieParams.refreshToken, JSON.stringify(refreshToken), {
-        httpOnly: true,
-        secure: false,
-        path: CookieParams.refreshTokenPath,
-        maxAge: CookieParams.refreshTokenMaxAge
-    });
+    makeCookie(res, CookieParams.accessToken, JSON.stringify(accessToken), CookieParams.accessTokenPath,CookieParams.accessTokenMaxAge);
+    makeCookie(res, CookieParams.refreshToken, JSON.stringify(refreshToken), CookieParams.refreshTokenPath,CookieParams.refreshTokenMaxAge);
 
     //----> Make a new token object and store it in the database.
     const newToken = makeToken(accessToken, refreshToken, userId);
@@ -159,16 +160,16 @@ const makeToken = (accessToken: string, refreshToken: string, userId: string) : 
 
 const generateAccessToken = async (id: string, name: string, email: string, role: Role) =>{
     //----> Expires is for one day, which is equal 24 * 60 * 60 * 1000 milliseconds
-    return generateTokenToken(id, name, email, role, 24 * 60 * 60 * 1000)
+    return generateToken(id, name, email, role, 24 * 60 * 60 * 1000)
 }
 
 const generateRefreshTokenToken = async (id: string, name: string, email: string, role: Role)=>{
     //----> Expires is for seven days, which is equal 7 * 24 * 60 * 60 * 1000 milliseconds
-    return generateTokenToken(id, name, email, role, 7 * 24 * 60 * 60 * 1000)
+    return generateToken(id, name, email, role, 7 * 24 * 60 * 60 * 1000)
 
 }
 
-const generateTokenToken = async (id: string, name: string, email: string, role: Role, expiresIn: number)=>{
+const generateToken = async (id: string, name: string, email: string, role: Role, expiresIn: number)=>{
     return jwt.sign(
         {
             id,

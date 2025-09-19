@@ -14,7 +14,8 @@ export function authenticationHelperFunction(req: Request)  {
     const userRole = jwtToken?.role;
     const isName = jwtToken?.name;
     const userId = jwtToken?.id;
+    const email = jwtToken?.email;
 
     //----> Send back the results.
-    return {userId, userRole, isName}
+    return {userId, userRole, isName, email}
 }

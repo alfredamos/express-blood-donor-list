@@ -8,6 +8,14 @@
     "rootDir": "./src",
     "outDir": "./dist",
     "ignoreDeprecations":"6.0",
+    "typeRoots": [
+      "./src/types", // Path to your custom types directory
+      "./node_modules/@types"
+    ]
   },
-  "lib": ["es2021"]
+  "lib": ["es2021"],
+  "include": [
+    "src/**/*.ts",
+    "src/types/express.d.ts" // Include your declaration files
+  ]
 }
