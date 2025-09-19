@@ -4,6 +4,8 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 
 import authRoutes from "./routes/auth.route"
+import notFoundRouteMiddleware from "./middlewares/notFoundRouteHandler.middleware";
+import errorHandlerMiddleware from "./middlewares/errorHandler.middleware";
 
 dotenv.config();
 
@@ -11,7 +13,7 @@ dotenv.config();
 const app = express();
 
 //----> Get the port number from environment from file.
-const Port = process.env.PORT || 3000;
+const Port = process.env.PORT || 5000;
 
 //----> Parse cookie.
 app.use(cookieParser());
@@ -32,6 +34,9 @@ app.use(express.json());
 
 //----> Routes.
 app.use("/api/auth", authRoutes);
+
+app.use(notFoundRouteMiddleware);
+app.use(errorHandlerMiddleware);
 
 //----> Listening port.
 app.listen(Port, () => console.log(`App is listening on ${Port}...`));

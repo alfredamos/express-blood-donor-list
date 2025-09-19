@@ -1,6 +1,5 @@
 import {z} from "zod";
 import {Gender} from "../models/gender.model";
-import {EditProfileDto} from "../dto/editProfile.dto";
 import {Role} from "../models/role.model";
 
 export const changePasswordSchema = z.object({
@@ -8,6 +7,8 @@ export const changePasswordSchema = z.object({
     password: z.string(),
     confirmPassword: z.string(),
     newPassword: z.string(),
+}).refine((values) => {
+    return values.newPassword === values.confirmPassword;
 })
 
 export const editProfileSchema = z.object({
@@ -18,7 +19,7 @@ export const editProfileSchema = z.object({
     name: z.string(),
     phone: z.string(),
     gender: z.enum(Gender),
-    dateOfBirth: z.date()
+    dateOfBirth: z.string()
 }) ;
 
 export const loginSchema = z.object({
@@ -35,6 +36,8 @@ export const signupSchema = z.object({
     name: z.string(),
     phone: z.string(),
     gender: z.enum(Gender),
-    dateOfBirth: z.date(),
+    dateOfBirth: z.string(),
     role: z.enum(Role),
+}).refine((values) => {
+    return values.password === values.confirmPassword;
 })

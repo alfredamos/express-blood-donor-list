@@ -5,7 +5,7 @@ import {changePasswordSchema} from "../validations/auth.validation";
 import catchError from "http-errors";
 import {StatusCodes} from "http-status-codes";
 
-export function changePasswordValidationMiddleware(req: Request, res: Response, next: NextFunction) {
+export function changePasswordValidationMiddleware(req: Request, _res: Response, next: NextFunction) {
     //----> Get the change-password-dto payload from request.
     const changePasswordDto = req.body as ChangePasswordDto;
 

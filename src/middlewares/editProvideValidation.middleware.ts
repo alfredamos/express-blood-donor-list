@@ -5,7 +5,7 @@ import {editProfileSchema} from "../validations/auth.validation";
 import catchError from "http-errors";
 import {StatusCodes} from "http-status-codes";
 
-export function editProvideValidationMiddleware(req: Request, res: Response, next: NextFunction) {
+export function editProvideValidationMiddleware(req: Request, _res: Response, next: NextFunction) {
     //----> Get the edit-profile-dto payload from request.
     const editProfileDto = req.body as EditProfileDto;
 

@@ -1,27 +1,31 @@
 import express from "express";
-import {signUpValidationMiddleware} from "../middlewares/signUpValidationMiddleware";
+import {signUpValidationMiddleware} from "../middlewares/signUpValidation.middleware";
 import {authController} from "../controllers/AuthController";
 import {changePasswordValidationMiddleware} from "../middlewares/changePasswordValidation.middleware";
 import {editProvideValidationMiddleware} from "../middlewares/editProvideValidation.middleware";
 import {loginValidationMiddleware} from "../middlewares/loginValidation.middleware";
+import {cookieAuthenticationMiddleware} from "../middlewares/cookieAuthentication.middleware";
 
 const router = express.Router();
 
 //----> change-password route.
 router.route("/change-password")
-    .patch(changePasswordValidationMiddleware, authController.changePassword);
+    .patch(changePasswordValidationMiddleware, cookieAuthenticationMiddleware, authController.changePassword);
 
 //----> edit-profile route.
 router.route("/edit-profile")
-    .patch(editProvideValidationMiddleware, authController.editProfile);
+    .patch(editProvideValidationMiddleware, cookieAuthenticationMiddleware, authController.editUserProfile);
 
 //----> Login route.
 router.route("/login")
-    .post(loginValidationMiddleware, authController.login);
+    .post(loginValidationMiddleware, authController.loginUser);
 
 //----> Sign-up route.
 router.route("/signup")
-    .post(signUpValidationMiddleware, authController.signUp);
+    .post(signUpValidationMiddleware, authController.signUpUser);
+
+router.route("/refresh")
+    .post(authController.refreshUserToken);
 
 
 export default router;

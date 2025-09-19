@@ -1,6 +1,5 @@
 generator client {
   provider = "prisma-client-js"
-  output   = "../src/generated/prisma"
 }
 
 datasource db {
@@ -67,6 +66,8 @@ model Token {
   id           String    @id @default(uuid())
   accessToken  String    @unique @db.VarChar(750)
   refreshToken String    @unique @db.VarChar(750)
+  revoked      Boolean
+  expired      Boolean
   tokenType    TokenType @default(Bearer)
 
   user   User   @relation(fields: [userId], references: [id])

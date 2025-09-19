@@ -5,7 +5,7 @@ import {loginSchema} from "../validations/auth.validation";
 import catchError from "http-errors";
 import {StatusCodes} from "http-status-codes";
 
-export function loginValidationMiddleware(req: Request, res: Response, next: NextFunction) {
+export function loginValidationMiddleware(req: Request, _res: Response, next: NextFunction) {
     //----> Get the login payload from the request.
     const loginDto = req.body as LoginDto;
 
