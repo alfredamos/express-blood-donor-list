@@ -1,6 +1,6 @@
 import express from "express";
 import {signUpValidationMiddleware} from "../middlewares/signUpValidation.middleware";
-import {authController} from "../controllers/AuthController";
+import {authController} from "../controllers/authController";
 import {changePasswordValidationMiddleware} from "../middlewares/changePasswordValidation.middleware";
 import {editProvideValidationMiddleware} from "../middlewares/editProvideValidation.middleware";
 import {loginValidationMiddleware} from "../middlewares/loginValidation.middleware";

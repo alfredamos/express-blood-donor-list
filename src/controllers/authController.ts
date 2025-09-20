@@ -16,6 +16,7 @@ import {ResponseMessage} from "../utils/reponseMessage";
 
 class AuthController {
 
+    ////----> Change password controller.
     async changePassword(req: Request, res: Response) {
         //----> Get the change-password payload from request.
         const changePasswordDto = req.body as ChangePasswordDto;
@@ -27,6 +28,7 @@ class AuthController {
         res.status(StatusCodes.OK).json(response);
     }
 
+    ////----> Edit user profile controller.
     async editUserProfile(req: Request, res: Response) {
         //----> Get the edit-profile payload from request.
         const editProfileDto = req.body as EditProfileDto;
@@ -38,6 +40,7 @@ class AuthController {
         res.status(StatusCodes.OK).json(response);
     }
 
+    ////----> Login user controller.
     async loginUser(req: Request, res: Response) {
         //----> Get the login payload from request.
         const loginDto = req.body as LoginDto;
@@ -56,6 +59,7 @@ class AuthController {
 
     }
 
+    ////----> Logout user controller.
     async logoutUser(req: Request, res: Response) {
         //----> Get the current access-token.
         const accessToken = getCookie(req, CookieParams.accessToken)
@@ -79,6 +83,7 @@ class AuthController {
         res.status(StatusCodes.OK).json( new ResponseMessage("Logout is successful!", "successful", 200) );
     }
 
+    ////----> Get current user controller.
     async getCurrentUser(req: Request, res: Response) {
         //----> Get the user id from request object.
         const {id} = req.user;
@@ -91,6 +96,7 @@ class AuthController {
 
     }
 
+    ////----> User signup controller.
     async signUpUser(req: Request, res: Response) {
         //----> Get the sign-up payload from request.
         const signUp = req.body as SignupDto;
@@ -102,6 +108,7 @@ class AuthController {
         res.status(StatusCodes.CREATED).json(response);
     }
 
+    ////----> User refresh-token controller.
     async refreshUserToken(req: Request, res: Response) {
         //----> Get refresh-token.
         const refreshToken = getCookie(req, CookieParams.refreshToken);
@@ -118,10 +125,12 @@ class AuthController {
 
 }
 
+////----> Delete cookie function.
 const deleteCookie = (res: Response, cookieName: string, cookiePath: string) => {
     res.clearCookie(cookieName, { path: cookiePath, secure: false, httpOnly: true });
 }
 
+////----> Make and store access and refresh cookies. Generate access and refresh tokens.
 const generateTokensAndCookies = async(userId: string, userName: string, userEmail: string, userRole: Role, res: Response) =>{
     //----> Get access-token and refresh-token.
     const accessToken = await generateAccessToken(userId, userName, userEmail, userRole);
@@ -137,6 +146,7 @@ const generateTokensAndCookies = async(userId: string, userName: string, userEma
     return accessToken;
 }
 
+////----> Make cookie function.
 const makeCookie = (res: Response, cookieName: string, cookieValue: string, cookiePath: string, maxAge: number) => {
     res.cookie(cookieName, cookieValue, {
         httpOnly: true,
@@ -146,6 +156,7 @@ const makeCookie = (res: Response, cookieName: string, cookieValue: string, cook
     })
 }
 
+////----> make token function.
 const makeToken = (accessToken: string, refreshToken: string, userId: string) : Token =>{
     return {
         id: crypto.randomUUID(),
@@ -158,17 +169,20 @@ const makeToken = (accessToken: string, refreshToken: string, userId: string) : 
     }
 }
 
+////----> Generate access token.
 const generateAccessToken = async (id: string, name: string, email: string, role: Role) =>{
     //----> Expires is for one day, which is equal 24 * 60 * 60 * 1000 milliseconds
     return generateToken(id, name, email, role, 24 * 60 * 60 * 1000)
 }
 
+////----> Generate refresh token.
 const generateRefreshTokenToken = async (id: string, name: string, email: string, role: Role)=>{
     //----> Expires is for seven days, which is equal 7 * 24 * 60 * 60 * 1000 milliseconds
     return generateToken(id, name, email, role, 7 * 24 * 60 * 60 * 1000)
 
 }
 
+////----> General token generator function.
 const generateToken = async (id: string, name: string, email: string, role: Role, expiresIn: number)=>{
     return jwt.sign(
         {

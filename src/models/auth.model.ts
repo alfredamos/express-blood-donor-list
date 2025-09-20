@@ -13,7 +13,7 @@ import {toUserDto} from "../utils/toDto";
 
 
 class AuthModel {
-  //----> Change-password.
+  ////----> Change-password function.
   async changePassword(request: ChangePasswordDto): Promise<ResponseMessage> {
     //---> Destructure request.
     const { email, password, newPassword } = request;
@@ -41,7 +41,7 @@ class AuthModel {
 
   }
 
-  //----> Edit user profile
+  ////----> Edit user profile function.
   async editUserProfile(request: EditProfileDto) {
       //----> Destructure email and password.
       const { email, password } = request;
@@ -75,7 +75,7 @@ class AuthModel {
 
   }
 
-  //----> Login user.
+  ////----> Login user function.
   async loginUser(request: LoginDto) {
       //----> Destructure email and password from request.
       const { email, password } = request;
@@ -97,12 +97,12 @@ class AuthModel {
 
   }
 
-  //----> Fetch the current-user.
+  ////----> Fetch the current-user function.
   async getCurrentUser(userId: string) {
       return toUserDto(await prisma.user.findUnique({where: {id: userId}}));
   }
 
-  //----> Signup new user.
+  ////----> Signup new user function.
   async signupUser(request: SignupDto){
       console.log("In signup of model : signup" , request);
       //----> destructure email, password, confirm-password from request.
@@ -132,6 +132,7 @@ class AuthModel {
       return new ResponseMessage("Signup is successfully", "success", 200)
   }
 
+  ////----> Refresh token function.
   async refreshUserToken(refreshToken: string){
       //----> Parse the refresh-token and check for validity of token.
       const tokenResult = validateUserToken(refreshToken)
@@ -151,7 +152,7 @@ class AuthModel {
   }
 
 
-  //----> Check for valid user password by comparing the user supplied password with the one in the database.
+  ////----> Check for valid user password by comparing the user supplied password with the one in the database.
   private async checkForValidPassword(rawPassword: string, hashedPassword: string){
       return await bcrypt.compare(rawPassword, hashedPassword);
   }
