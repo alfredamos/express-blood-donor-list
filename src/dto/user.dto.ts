@@ -6,7 +6,6 @@ export class UserDto{
     email:       string;
     image:       string;
     phone:       string;
-    password:    string;
     age:       number;
     gender:      Gender;
     role: Role;

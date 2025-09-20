@@ -15,7 +15,7 @@ router.route("/")
     .get(cookieAdminAuthorizationMiddleware, cookieAdminAuthorizationMiddleware, bloodStatController.getAllBloodStats)
     .post(bloodStatCreateValidationMiddleware, cookieAuthenticationMiddleware,bloodStatController.createBloodStat)
 
-router.route("/delete-all")
+router.route("/all/delete-all")
     .delete(cookieAuthenticationMiddleware, cookieAdminAuthorizationMiddleware, bloodStatController.deleteAllBloodStats)
 
 router.route("/get-by-user-id/:userId")

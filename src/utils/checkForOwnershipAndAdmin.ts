@@ -1,6 +1,7 @@
 import {Role} from "@prisma/client";
 import catchError from "http-errors";
 import {StatusCodes} from "http-status-codes";
+import {UuidTool} from "uuid-tool";
 
 export function checkForOwnershipAndAdmin(
     userIdFromParam: string,
@@ -8,7 +9,7 @@ export function checkForOwnershipAndAdmin(
     role: Role
 ){
     //----> compare the user-id fom param with the user-id on the resource.
-    const isSameUser = userIdFromParam === userIdFromResource;
+    const isSameUser = UuidTool.compare(userIdFromParam, userIdFromResource)
 
     //----> Check for admin privilege.
     const isAdmin = role === Role.Admin;

@@ -12,7 +12,7 @@ export function cookieAdminAuthorizationMiddleware(req: Request, _res: Response,
     const isAdmin = userRole === Role.Admin;
 
     //----> Permit or reject user.
-    if (!isAdmin && !userName && !userId) {
+    if (!isAdmin) {
         throw catchError(StatusCodes.FORBIDDEN, "You are not allowed to view or perform this action!");
     }
 

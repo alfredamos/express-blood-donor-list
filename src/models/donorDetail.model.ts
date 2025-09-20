@@ -30,8 +30,18 @@ class DonorDetailModel {
 
   ////----> Delete all donor-details.
   async deleteAllDonorDetails() {
+    //----> Fetch all donor-details.
+    const allDonorDetails = await prisma.donorDetail.findMany({});
+    const allDonorDetailIds = allDonorDetails.map((donorDetail) => donorDetail.id);
+
     //----> Delete all donor-details and send back response.
-    prisma.donorDetail.deleteMany({});
+    return prisma.donorDetail.deleteMany({
+        where: {
+            id:{
+                in: allDonorDetailIds,
+            }
+        }
+    });
   }
 
   ////----> Edit donor-detail function.

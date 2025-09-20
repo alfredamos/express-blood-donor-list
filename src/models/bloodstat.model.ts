@@ -36,8 +36,18 @@ class BloodStatModel {
 
     ////----> Delete all blood-stats.
     async deleteAllBloodStats(){
+        //----> Fetch all blood-stats.
+        const allBloodStats = await prisma.bloodStat.findMany({});
+        const allBloodStatIds = allBloodStats.map(bloodStat => bloodStat.id);
+
         //----> Delete all blood-stats and send back response.
-        prisma.bloodStat.deleteMany({})
+        await prisma.bloodStat.deleteMany({
+            where: {
+                id:{
+                    in: allBloodStatIds,
+                },
+            },
+        })
     }
 
     ////----> Edit blood-stat function.
@@ -72,6 +82,7 @@ class BloodStatModel {
 
     ////----> Fetch one blood-stat by id function.
     async getBloodStatByUserId(userId: string){
+
         //----> Fetch the blood-stat that matches the giving user-id.
         return this.existBloodStatByUserId(userId);
 

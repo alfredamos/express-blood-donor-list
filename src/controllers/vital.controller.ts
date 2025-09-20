@@ -3,6 +3,7 @@ import { vitalModel } from "../models/vital.model";
 import { Request, Response } from "express";
 import {ResponseMessage} from "../utils/reponseMessage";
 import {Vital} from "@prisma/client";
+import {checkResourceContent} from "../utils/checkResourceContent";
 
 class VitalController {
   ////----> create blood-stat controller.
@@ -50,7 +51,10 @@ class VitalController {
     const { userId } = req.params;
 
     //----> Delete the blood-stat with the giving user-id.
-    await vitalModel.deleteVitalByUserId(userId);
+    const vitals = await vitalModel.deleteVitalByUserId(userId);
+
+      //----> Check for empty content.
+      checkResourceContent(vitals.count)
 
     //----> send back the response.
     res
@@ -67,7 +71,10 @@ class VitalController {
   ////----> Delete all blood-stats controller.
   async deleteAllVitals(_req: Request, res: Response) {
     //----> Delete all blood stats.
-    await vitalModel.deleteAllVitals();
+    const allVitas = await vitalModel.deleteAllVitals();
+
+      //----> Check for empty content.
+      checkResourceContent(allVitas.count)
 
     //----> send back the response.
     res
@@ -113,6 +120,9 @@ class VitalController {
     //----> Fetch all the blood-stats from database.
     const allVitals = await vitalModel.getAllVitals();
 
+      //----> Check for empty content.
+      checkResourceContent(allVitals.length)
+
     //----> Send back the response.
     res.status(StatusCodes.OK).json(allVitals);
   }
@@ -138,10 +148,13 @@ class VitalController {
     const { userId } = req.params;
 
     //----> Fetch the blood-stat with the giving id.
-    const vital = await vitalModel.getVitalByUserId(userId);
+    const vitals = await vitalModel.getVitalByUserId(userId);
+
+      //----> Check for empty content.
+      checkResourceContent(vitals.length)
 
     //----> Send back the response.
-    res.status(StatusCodes.OK).json(vital);
+    res.status(StatusCodes.OK).json(vitals);
   }
 }
 

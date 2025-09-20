@@ -1,6 +1,8 @@
 import {Request, Response} from "express";
 import {userModel} from "../models/user.model";
 import {StatusCodes} from "http-status-codes";
+import {checkResourceContent} from "../utils/checkResourceContent";
+import {ResponseMessage} from "../utils/reponseMessage";
 
 class UserController {
     ////----> Delete one user by id controller.
@@ -15,7 +17,11 @@ class UserController {
         await userModel.deleteUserById(id, userId, role);
 
         //----> Send back the response.
-        res.status(StatusCodes.OK).send("User deleted successfully.");
+        res.status(StatusCodes.OK).json( new ResponseMessage(
+            "User has been deleted successfully!",
+            "success",
+            200
+        ));
     }
 
     ////----> Get one user by id controller.
@@ -37,6 +43,9 @@ class UserController {
     async getAllUsers(req: Request, res: Response): Promise<void> {
         //----> Fetch all users.
         const allUsers = await userModel.getAllUsers();
+
+        //----> Check for empty content.
+        checkResourceContent(allUsers.length);
 
         //----> Send back the response.
         res.status(StatusCodes.OK).send(allUsers);

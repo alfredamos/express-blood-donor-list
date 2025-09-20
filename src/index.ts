@@ -9,6 +9,7 @@ import notFoundRouteMiddleware from "./middlewares/notFoundRouteHandler.middlewa
 import errorHandlerMiddleware from "./middlewares/errorHandler.middleware";
 import donorDetailRoutes from "./routes/donorDetail.route";
 import vitalRoutes from "./routes/vital.route";
+import userRoutes from "./routes/user.route";
 
 dotenv.config();
 
@@ -38,11 +39,14 @@ app.use(express.json());
 //----> Auth routes.
 app.use("/api/auth", authRoutes);
 
-//----> Donor-details routes.
+//----> Blood-stats routes.
 app.use("/api/blood-stats", bloodStatRoutes);
 
-//----> Vital routes.
+//----> Donor-details routes.
 app.use("/api/donor-details", donorDetailRoutes);
+
+//----> Users routes.
+app.use("/api/users", userRoutes);
 
 //----> Vital routes.
 app.use("/api/vitals", vitalRoutes);

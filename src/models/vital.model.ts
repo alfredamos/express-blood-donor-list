@@ -5,33 +5,46 @@ import catchError from "http-errors";
 import {checkForOwnershipAndAdmin} from "../utils/checkForOwnershipAndAdmin";
 
 class VitalModel {
-  ////----> Create donor-detail function.
+  ////----> Create vital function.
   async createVital(vital: Vital) {
-    return prisma.vital.create({ data: vital });
+    //----> Calculate the bmi.
+    const bmi = (Number(vital.weight))/(Number(vital.height) * Number(vital.height));
+
+    return prisma.vital.create({ data: {...vital, bmi} });
   }
 
-  ////----> Delete donor-detail by id function.
+  ////----> Delete vital by id function.
   async deleteVitalById(id: string, userId: string, role: Role) {
-      //----> Fetch the donor-detail and user-id.
-      const {userId: userIdOnVital, vital} = await this.existVitalId(id);
+    //----> Fetch the donor-detail and user-id.
+    const {userId: userIdOnVital, vital} = await this.existVitalId(id);
 
-      //----> Check for ownership or admin.
-      checkForOwnershipAndAdmin(userId, userIdOnVital, role);
+    //----> Check for ownership or admin.
+    checkForOwnershipAndAdmin(userId, userIdOnVital, role);
 
-    //----> Delete the donor-detail.
+    //----> Delete the vital.
     return prisma.vital.delete({ where: { id } });
   }
 
-  ////----> Delete donor-detail user-id function.
+  ////----> Delete vital user-id function.
   async deleteVitalByUserId(userId: string) {
     //----> Delete the donor-detail.
-    return prisma.vital.deleteMany({ where: { userId } });
+    return prisma.vital.deleteMany({where: {userId}});
   }
 
-  ////----> Delete all donor-details.
+  ////----> Delete all vitals.
   async deleteAllVitals() {
+    //----> Fetch all vitals from database.
+    const allVitals = await prisma.vital.findMany({});
+    const allVitalIds = allVitals.map(vital => vital.id);
     //----> Delete all donor-details and send back response.
-    prisma.vital.deleteMany({});
+    return prisma.vital.deleteMany({
+        where: {
+            id:{
+                in: allVitalIds
+            },
+
+        },
+    });
   }
 
   ////----> Edit donor-detail function.
@@ -44,13 +57,16 @@ class VitalModel {
       //----> Fetch the donor-detail and user-id.
       const {userId: userIdOnVital} = await this.existVitalId(id);
 
+      //----> Calculate the bmi.
+      const bmi = (Number(vital.weight))/(Number(vital.height) * Number(vital.height));
+
       //----> Check for ownership or admin.
       checkForOwnershipAndAdmin(userId, userIdOnVital, role);
 
     //----> Update the donor-detail.
     return prisma.vital.update({
       where: { id },
-      data: { ...vital },
+      data: { ...vital, bmi },
     });
   }
 

@@ -24,6 +24,9 @@ class UserModel{
 
         //----> Check for same user and admin privilege.
         checkForOwnershipAndAdmin(userId, id, role);
+
+        //----> Send back result.
+        return user;
     }
 
     ////----> Get all users from database function.

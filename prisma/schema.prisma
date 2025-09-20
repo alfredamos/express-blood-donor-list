@@ -43,7 +43,7 @@ model DonorDetail {
   id                String    @id @default(uuid())
   volumePerDonation Int
   numberOfDonations Int
-  Type              DonorType @default(First)
+  type              DonorType @default(First)
 
   user   User   @relation(fields: [userId], references: [id])
   userId String

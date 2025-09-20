@@ -3,6 +3,7 @@ import {bloodStatModel} from "../models/bloodstat.model";
 import {StatusCodes} from "http-status-codes";
 import {Request, Response} from "express";
 import {ResponseMessage} from "../utils/reponseMessage";
+import {checkResourceContent} from "../utils/checkResourceContent";
 
 class BloodStatController{
     ////----> create blood-stat controller.
@@ -43,7 +44,7 @@ class BloodStatController{
         const {userId} = req.params;
 
         //----> Delete the blood-stat with the giving user-id.
-        await bloodStatModel.deleteBloodStatByUserId(userId);
+        const bloodStat = await bloodStatModel.deleteBloodStatByUserId(userId);
 
         //----> send back the response.
         res.status(StatusCodes.OK).json(new ResponseMessage("BloodStat has been deleted successfully!", "success", 200));
@@ -73,7 +74,10 @@ class BloodStatController{
         bloodStatToEdit.userId = userId;
 
         //----> Edit the blood-stat with the giving id.
-        await bloodStatModel.editBloodStatById(id, bloodStatToEdit, userId, role);
+        const updatedBloodStat = await bloodStatModel.editBloodStatById(id, bloodStatToEdit, userId, role);
+
+        //----> Check for empty content.
+        checkResourceContent(updatedBloodStat);
 
         //----> send back the response.
         res.status(StatusCodes.OK).json(new ResponseMessage("BloodStat has been edited successfully!", "success", 200));
