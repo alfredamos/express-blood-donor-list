@@ -35,18 +35,20 @@ model BloodStat {
 
   userId String @unique
   user   User   @relation(fields: [userId], references: [id])
+
+  @@map("blood-stats")
 }
 
 model DonorDetail {
   id                String    @id @default(uuid())
   volumePerDonation Int
   numberOfDonations Int
-  expired           Boolean   @default(false)
-  revoked           Boolean   @default(false)
   Type              DonorType @default(First)
 
   user   User   @relation(fields: [userId], references: [id])
   userId String
+
+  @@map("donor-details")
 }
 
 model Vital {
@@ -60,6 +62,8 @@ model Vital {
 
   user   User   @relation(fields: [userId], references: [id])
   userId String
+
+  @@map("vitals")
 }
 
 model Token {
@@ -72,6 +76,8 @@ model Token {
 
   user   User   @relation(fields: [userId], references: [id])
   userId String
+
+  @@map("tokens")
 }
 
 enum Gender {

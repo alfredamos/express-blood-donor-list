@@ -12,5 +12,5 @@ export function idCheckValidationMiddleware(req: Request, res: Response, next: N
         throw catchError(StatusCodes.BAD_REQUEST, "Invalid id, please provide a valid id!");
     }
 
-    next();
+    return next();
 }

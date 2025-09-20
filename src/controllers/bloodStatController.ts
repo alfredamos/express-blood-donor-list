@@ -6,9 +6,13 @@ import {ResponseMessage} from "../utils/reponseMessage";
 
 class BloodStatController{
     ////----> create blood-stat controller.
-    async createBlood(req: Request, res: Response){
+    async createBloodStat(req: Request, res: Response){
         //----> Get the blood-stat payload from request body.
         const bloodStat = req.body as unknown as BloodStat;
+
+        //----> Get the user-id from the user object on the request object.
+        const {id: userId} = req.user;
+        bloodStat.userId = userId;
 
         //----> Store the new-blood-stat data in the database.
         const newBloodStat = await bloodStatModel.createBloodStat(bloodStat);
@@ -66,9 +70,10 @@ class BloodStatController{
 
         //----> Get the blood-stat payload from request body.
         const bloodStatToEdit = req.body as unknown as BloodStat;
+        bloodStatToEdit.userId = userId;
 
         //----> Edit the blood-stat with the giving id.
-        await bloodStatModel.editBloodStatId(id, bloodStatToEdit, userId, role);
+        await bloodStatModel.editBloodStatById(id, bloodStatToEdit, userId, role);
 
         //----> send back the response.
         res.status(StatusCodes.OK).json(new ResponseMessage("BloodStat has been edited successfully!", "success", 200));
