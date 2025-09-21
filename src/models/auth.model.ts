@@ -104,7 +104,7 @@ class AuthModel {
 
   ////----> Signup new user function.
   async signupUser(request: SignupDto){
-      console.log("In signup of model : signup" , request);
+
       //----> destructure email, password, confirm-password from request.
       const { email, password } = request;
 
