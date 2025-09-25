@@ -8,7 +8,17 @@ class BloodStatModel {
 
     ////----> Create blood-stat function.
     async createBloodStat(bloodStat: BloodStat){
-        return prisma.bloodStat.create({data: bloodStat});
+      //----> Get the user-id on blood-stat.
+      const userId = bloodStat.userId;
+      const fetchedBloodStat = await this.getBloodStatByUserId(userId);
+
+      //----> Check for existence of blood-stat for this user.
+      if (fetchedBloodStat){
+        throw catchError(StatusCodes.BAD_REQUEST, "You already have blood-stat, you are only allowed to edit!")
+      }
+
+      //----> Insert the blood-stat into the database
+      return prisma.bloodStat.create({ data: bloodStat });
     }
 
     ////----> Delete blood-stat by id function.

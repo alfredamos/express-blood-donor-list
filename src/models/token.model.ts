@@ -24,6 +24,7 @@ export class TokenModel {
 
         //----> Invalidate all valid tokens
         if (!validUserTokens?.length) return;
+        
         const filteredTokens = validUserTokens.map(async (token) => {
             const updatedToken = {
                 ...token,
